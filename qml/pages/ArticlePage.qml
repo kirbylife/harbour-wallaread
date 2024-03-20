@@ -21,6 +21,9 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import Sailfish.WebView 1.0
+import Sailfish.WebEngine 1.0
+import Sailfish.WebView.Popups 1.0
 
 Page {
     id: articlePage
@@ -29,7 +32,7 @@ Page {
     property string title
     property string content
 
-    SilicaWebView {
+    WebView {
         id: webview
         anchors.fill: parent
 
@@ -42,9 +45,13 @@ Page {
         var html =
             "<html>" +
             "<head>" +
+                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
                 "<style type=\"text/css\">" +
                 "article { font-family: sans-serif; font-size: 16px; }" +
-                "article h1 { font-size: 32px; }" +
+                "article h1 { font-size: 25px; }" +
+                "img { max-width: 100%; height: auto; }" +
+                "pre { word-wrap: normal; overflow-x: auto }" +
+                "code { word-wrap: normal; overflow-x: auto }" +
                 "</style>" +
             "</head>" +
             "<body>" +
