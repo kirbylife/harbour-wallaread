@@ -857,8 +857,7 @@ function createLatestDatabase( db )
                                "password TEXT NOT NULL, " +
                                "clientId TEXT NOT NULL, " +
                                "clientSecret TEXT NOT NULL, " +
-                               "lastSync INTEGER DEFAULT 0," +
-                               "fetchUnread INTEGER DEFAULT 0" +
+                               "lastSync INTEGER DEFAULT 0" +
                                ")"
                              );
 
@@ -936,14 +935,24 @@ function _updateSchema_v3( db )
     );
 }
 
+var errorFlag = false;
 function _updateSchema_v4( db )
 {
     db.transaction(
-        function( tx ) {
-            tx.executeSql( "ALTER TABLE servers ADD COLUMN fetchUnread INTEGER DEFAULT 0" );
-            tx.executeSql( "UPDATE servers SET fetchUnread=0" );
+        function ( tx ) {
+            try {
+                tx.executeSql( "ALTER TABLE servers ADD COLUMN fetchUnread INTEGER DEFAULT 0" );
+                tx.executeSql( "UPDATE servers SET fetchUnread=0" );
+            } catch ( e ) {
+                if ( errorFlag ) throw e;
+
+                errorFlag = true;
+                resetDatabase();
+                _updateSchema_v4( db );
+            }
 
             db.changeVersion( db.version, "0.4" );
         }
     );
 }
+
